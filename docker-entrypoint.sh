@@ -2,8 +2,13 @@
 
 if [ "$1" = "redis-server" ]; then
     redis-server &
+    toxiproxy-server &
     sleep 1
-    vaurien --proxy "0.0.0.0:7379" --backend "0.0.0.0:6379" --protocol tcp --stay-connected --behavior 10:blackout --protocol-tcp-keep-alive &
+    toxiproxy-cli create redis -l "0.0.0.0:7379" -u "0.0.0.0:6379"
+    sleep 30
+    toxiproxy-cli toggle redis
+    sleep 15
+    toxiproxy-cli toggle redis
     while true; do
         sleep 1
     done
